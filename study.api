@@ -1,0 +1,30 @@
+syntax = "v1"
+
+info(
+	title: "online study room"
+	desc: "在线云学习教室"
+	author: "jourmey"
+	version: "v0.0.1"
+)
+
+type (
+	CommonResult {
+		Code   int         `json:"code"`
+		Result interface{} `json:"result"`
+		Msg    string      `json:"msg"`
+	}
+	GetRequest {
+		Id int `path:"id"`
+	}
+)
+
+@server(
+	group: hello
+)
+service admin-api {
+	@doc(
+		summary: "hello"
+	)
+	@handler helloHandler
+	get /hello () returns (CommonResult)
+}
