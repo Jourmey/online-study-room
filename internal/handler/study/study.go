@@ -16,7 +16,15 @@ func RoomTopologyHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	}
 }
 
-func SetSeatHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func SeatsHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		l := study.NewLogic(r.Context(), ctx)
+		resp, err := l.Seats()
+		base.Result(w, resp, err)
+	}
+}
+
+func IntoSeatHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req struct {
 			SeatId        int    `json:"seat_id"`
@@ -30,7 +38,7 @@ func SetSeatHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := study.NewLogic(r.Context(), ctx)
-		err := l.SetSeat(req.SeatId,
+		err := l.InfoSeat(req.SeatId,
 			req.UserId,
 			req.WorkName,
 			req.SeatColorCode)

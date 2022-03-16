@@ -12,7 +12,7 @@ type (
 		Find(id int) (*Seat, error)
 		Finds(ids []int) ([]*Seat, error)
 		FindByRoomIds(ids []int) ([]*Seat, error)
-		SetSeat(seatId int,
+		IntoSeat(seatId int,
 			userId int,
 			workName string,
 			enterDate time.Time,
@@ -20,6 +20,7 @@ type (
 			seatColorCode string) (err error)
 		LeaveSeat(seatId int,
 			userId int) (err error)
+		FindAllOnline() ([]*Seat, error)
 	}
 
 	defaultStudySeatModel struct {
@@ -46,12 +47,6 @@ type (
 	}
 )
 
-func NewStudySeatModel(db *gorm.DB) StudySeatModel {
-	return &defaultStudySeatModel{
-		db: db,
-	}
-}
-
 func (*Seat) TableName() string {
 	return StudySeatTable
 }
@@ -71,7 +66,7 @@ func (m *defaultStudySeatModel) FindByRoomIds(ids []int) (v []*Seat, err error) 
 	return
 }
 
-func (m *defaultStudySeatModel) SetSeat(seatId int,
+func (m *defaultStudySeatModel) IntoSeat(seatId int,
 	userId int,
 	workName string,
 	enterDate time.Time,
@@ -91,6 +86,7 @@ func (m *defaultStudySeatModel) SetSeat(seatId int,
 
 func (m *defaultStudySeatModel) LeaveSeat(seatId int, userId int) (err error) {
 	update := map[string]interface{}{
+		"user_id":    nil,
 		"entered_at": nil,
 		"until":      nil,
 		"work_name":  nil,
@@ -98,4 +94,15 @@ func (m *defaultStudySeatModel) LeaveSeat(seatId int, userId int) (err error) {
 	}
 	err = m.db.Table(StudySeatTable).Where("id = ? and user_id = ?", seatId, userId).Updates(update).Error
 	return
+}
+
+func (m *defaultStudySeatModel) FindAllOnline() (v []*Seat, err error) {
+	err = m.db.Where("user_id is not null").Find(&v).Error
+	return
+}
+
+func NewStudySeatModel(db *gorm.DB) StudySeatModel {
+	return &defaultStudySeatModel{
+		db: db,
+	}
 }

@@ -51,13 +51,19 @@ func (c *Logic) RoomTopology() (types.RoomTopology, error) {
 
 	for _, room := range rooms {
 		oneRoom := types.Room{
-			Room:  *room,
-			Seats: make([]types.Seat, 0),
+			ID:         int(room.ID),
+			Name:       room.Name,
+			SeatNumber: room.SeatNumber,
+			Seats:      make([]types.Seat, 0),
 		}
 		for _, seat := range seats {
 			if seat.RoomId == int(room.ID) {
 				oneRoom.Seats = append(oneRoom.Seats, types.Seat{
-					Seat: *seat,
+					ID:   int(seat.ID),
+					X:    seat.X,
+					Y:    seat.Y,
+					Wide: seat.Wide,
+					High: seat.High,
 				})
 			}
 		}
@@ -68,12 +74,28 @@ func (c *Logic) RoomTopology() (types.RoomTopology, error) {
 }
 
 // 获取所有有人的座位的数据
-//func (c *StudyController) Seats(ctx context.Context) (RoomDoc, error) {
-//	return roomData, nil
-//}
+func (c *Logic) Seats() (types.SeatAllResponse, error) {
+	o, err := c.seat.FindAllOnline()
+	if err != nil {
+		return types.SeatAllResponse{}, err
+	}
+	r := types.SeatAllResponse{
+		Seats: make([]types.OnlineSeat, 0, len(o)),
+	}
+	for _, oo := range o {
+		r.Seats = append(r.Seats, types.OnlineSeat{
+			UserId:    oo.UserId,
+			EnteredAt: oo.EnteredAt.Format(types.GoTimeFormat),
+			Until:     oo.Until.Format(types.GoTimeFormat),
+			WorkName:  oo.WorkName,
+			ColorCode: oo.ColorCode,
+		})
+	}
+	return r, nil
+}
 
 // 用户进入座位
-func (c *Logic) SetSeat(seatId int,
+func (c *Logic) InfoSeat(seatId int,
 	userId int,
 	workName string,
 	seatColorCode string,
@@ -81,7 +103,7 @@ func (c *Logic) SetSeat(seatId int,
 	exitDate := time.Now()
 	enterDate := exitDate.Add(2 * time.Hour)
 
-	return c.seat.SetSeat(seatId,
+	return c.seat.IntoSeat(seatId,
 		userId,
 		workName,
 		enterDate,
