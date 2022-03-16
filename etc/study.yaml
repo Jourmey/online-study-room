@@ -5,3 +5,5 @@ Log:
   Mode: "file"
   Path: "logs"
   Level: "info"
+Sqlite:
+  Dsn: "etc/study.db"
