@@ -45,3 +45,9 @@ type Seat struct {
 	Wide int `json:"wide"`
 	High int `json:"high"`
 }
+
+type User struct {
+	UserName string `json:"user_name"` // 用户名密码
+	Password string `json:"password"`  // 用户名密码
+	NikeName string `json:"nike_name"` // 用户昵称
+}

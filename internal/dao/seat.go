@@ -21,6 +21,7 @@ type (
 		LeaveSeat(seatId int,
 			userId int) (err error)
 		FindAllOnline() ([]*Seat, error)
+		FindOnlineByRoomId(id int) ([]*Seat, error)
 	}
 
 	defaultStudySeatModel struct {
@@ -98,6 +99,11 @@ func (m *defaultStudySeatModel) LeaveSeat(seatId int, userId int) (err error) {
 
 func (m *defaultStudySeatModel) FindAllOnline() (v []*Seat, err error) {
 	err = m.db.Where("user_id is not null").Find(&v).Error
+	return
+}
+
+func (m *defaultStudySeatModel) FindOnlineByRoomId(roomid int) (v []*Seat, err error) {
+	err = m.db.Where("room_id = ? and user_id is not null", roomid).Find(&v).Error
 	return
 }
 

@@ -1,4 +1,4 @@
-package study
+package room
 
 import (
 	"context"
@@ -73,9 +73,9 @@ func (c *Logic) RoomTopology() (types.RoomTopology, error) {
 	return r, nil
 }
 
-// 获取所有有人的座位的数据
-func (c *Logic) Seats() (types.SeatAllResponse, error) {
-	o, err := c.seat.FindAllOnline()
+// 获取房间的在线学生数据
+func (c *Logic) SeatsByRoomId(roomId int) (types.SeatAllResponse, error) {
+	o, err := c.seat.FindOnlineByRoomId(roomId)
 	if err != nil {
 		return types.SeatAllResponse{}, err
 	}
@@ -95,11 +95,7 @@ func (c *Logic) Seats() (types.SeatAllResponse, error) {
 }
 
 // 用户进入座位
-func (c *Logic) InfoSeat(seatId int,
-	userId int,
-	workName string,
-	seatColorCode string,
-) error {
+func (c *Logic) InfoSeat(seatId int, userId int, workName string, seatColorCode string, ) error {
 	exitDate := time.Now()
 	enterDate := exitDate.Add(2 * time.Hour)
 
@@ -112,9 +108,7 @@ func (c *Logic) InfoSeat(seatId int,
 }
 
 // 用户离开座位
-func (c *Logic) LeaveSeat(seatId int,
-	userId int,
-) error {
+func (c *Logic) LeaveSeat(seatId int, userId int, ) error {
 
 	return c.seat.LeaveSeat(seatId,
 		userId)
@@ -122,38 +116,24 @@ func (c *Logic) LeaveSeat(seatId int,
 
 //
 //func (c *StudyController) SetLastEnteredDate(_ context.Context, tx *firestore.Transaction, userId string, enteredDate time.Time) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetLastExitedDate(tx *firestore.Transaction, userId string, exitedDate time.Time) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) UnSetSeatInRoom(tx *firestore.Transaction, seat Seat) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetMyRankVisible(_ context.Context, tx *firestore.Transaction, userId string, rankVisible bool) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetMyDefaultStudyMin(tx *firestore.Transaction, userId string, defaultStudyMin int) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) AddUserHistory(tx *firestore.Transaction, userId string, action string, details interface{}) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) RetrieveUser(ctx context.Context, tx *firestore.Transaction, userId string) (UserDoc, error) {
-//
-//	return userData, nil
 //}
 //
 //func (c *StudyController) UpdateTotalTime(
@@ -162,56 +142,37 @@ func (c *Logic) LeaveSeat(seatId int,
 //	newTotalTimeSec int,
 //	newDailyTotalTimeSec int,
 //) error {
-//
 //}
 //
 //func (c *StudyController) SaveLiveChatId(ctx context.Context, tx *firestore.Transaction, liveChatId string) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) InitializeUser(tx *firestore.Transaction, userId string, userData UserDoc) error {
-//
 //}
 //
 //func (c *StudyController) RetrieveAllUserDocRefs(ctx context.Context) ([]*firestore.DocumentRef, error) {
-//
 //}
 //
 //func (c *StudyController) RetrieveAllNonDailyZeroUserDocs(ctx context.Context) *firestore.DocumentIterator {
-//
 //}
 //
 //func (c *StudyController) ResetDailyTotalStudyTime(tx *firestore.Transaction, userRef *firestore.DocumentRef) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetLastResetDailyTotalStudyTime(tx *firestore.Transaction, date time.Time) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetDesiredMaxSeats(tx *firestore.Transaction, desiredMaxSeats int) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetMaxSeats(tx *firestore.Transaction, maxSeats int) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetAccessTokenOfChannelCredential(tx *firestore.Transaction, accessToken string, expireDate time.Time) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) SetAccessTokenOfBotCredential(ctx context.Context, tx *firestore.Transaction, accessToken string, expireDate time.Time) error {
-//
-//	return nil
 //}
 //
 //func (c *StudyController) UpdateSeats(tx *firestore.Transaction, seats []Seat) error {
-//
 //}
